@@ -1,0 +1,6 @@
+include Makefile
+
+CC      = gcc -O3
+CFLAGS  = -I ../../bctool/ -I../../firmware/ -I/usr/local/include -g -static
+LDFLAGS = 
+

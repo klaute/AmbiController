@@ -1,0 +1,6 @@
+#define BC_READER_FIRST_START_CHAR        '<'
+#define BC_READER_SECOND_START_CHAR       '>'
+#define BC_READER_FIRST_END_CHAR          '\r'
+#define BC_READER_SECOND_END_CHAR         '\n'
+#define BC_ANSWER_OK                      'K'
+#define BC_ANSWER_NOK                     'N'

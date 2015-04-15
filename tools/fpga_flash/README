@@ -1,0 +1,5 @@
+Author: Kai Lauterbach (klaute@gmail.com)
+License: General Public License (GPL v3)
+
+This software can be used to read/write the FPGA's flash content.
+The serial USB connection is supported only.

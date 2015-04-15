@@ -1,0 +1,6 @@
+include Makefile
+
+CC      = gcc
+CFLAGS  = -I../../firmware -I../../bctool -I/usr/local/include -g -std=gnu99 -static
+LDFLAGS = 
+

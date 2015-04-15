@@ -1,0 +1,8 @@
+include Makefile
+
+#SDL_DISABLE=-DSDL_DISABLED_BY_MAKEFILE=1
+
+CC      = gcc
+CFLAGS  = `sdl2-config --cflags` -I../firmware/ -I/usr/local/include -g $(SDL_DISABLE) -std=gnu99
+LDFLAGS = -lm
+

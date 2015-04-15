@@ -1,0 +1,5 @@
+Author: Kai Lauterbach (klaute@gmail.com)
+License: General Public License (GPL v3)
+
+This software can be used to reset the AmbiController to the bootloader.
+It can only be used with the serial USB conneciton. Bluetooth is not supported yet.

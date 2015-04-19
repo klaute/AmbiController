@@ -106,29 +106,36 @@ void gui_show_RGB_pixel(unsigned int led, unsigned int r, unsigned int g, unsign
     rec.w = LED_COLOR_PIXE_WIDTH;
     rec.h = LED_COLOR_PIXE_HEIGHT;
 
-    if (led < 24)
+    int gChannelALEDNum = 18;
+    int gChannelBLEDNum = 34;
+    int gChannelCLEDNum = 18;
+    int gChannelDLEDNum = 15;
+    int gChannelELEDNum = 15;
+
+    //if (led < 24)
+    if (led < gChannelALEDNum)
     {
         // left bottom to top
         px = 2;
-        py =   (unsigned int)(24 - led) * (((float)FRAME_WIDTH+0.0) * (float)(WINDOW_HEIGHT / ((float)FRAME_WIDTH + 3.7)) / 24.0)
+        py =   (unsigned int)(gChannelALEDNum - led) * (((float)FRAME_WIDTH+0.0) * (float)(WINDOW_HEIGHT / ((float)FRAME_WIDTH + 3.7)) / (float)(gChannelALEDNum))
              + (1 * WINDOW_HEIGHT / (FRAME_WIDTH + 4)) + 5;
-    } else if (led < 64)
+    } else if (led < gChannelALEDNum + gChannelBLEDNum)
     {
         // top left to right
-        px =   (unsigned int)(led - 24) * (((float)FRAME_WIDTH+0.0) * (float)(WINDOW_WIDTH / ((float)FRAME_WIDTH + 3.7)) / 40.0)
+        px =   (unsigned int)(led - gChannelALEDNum) * (((float)FRAME_WIDTH+0.0) * (float)(WINDOW_WIDTH / ((float)FRAME_WIDTH + 3.7)) / (float)(gChannelBLEDNum))
              + (2 * WINDOW_WIDTH / (FRAME_WIDTH + 4)) + 2;
         py = 2;
-    } else if (led < 88)
+    } else if (led < gChannelALEDNum + gChannelBLEDNum + gChannelCLEDNum)
     {
         // right top to down
-        px = WINDOW_WIDTH - (WINDOW_WIDTH / 40) - 2;
-        py =   (unsigned int)(led - 64) * (((float)FRAME_WIDTH+0.0) * (float)(WINDOW_HEIGHT / ((float)FRAME_WIDTH + 3.7)) / 24.0)
+        px = WINDOW_WIDTH - (WINDOW_WIDTH / gChannelBLEDNum) - 2;
+        py =   (unsigned int)(led - (gChannelALEDNum + gChannelBLEDNum)) * (((float)FRAME_WIDTH+0.0) * (float)(WINDOW_HEIGHT / ((float)FRAME_WIDTH + 3.7)) / (float)(gChannelCLEDNum))
              + (2 * WINDOW_HEIGHT / (FRAME_WIDTH + 4)) + 1;
     } else {
         // bottom right to left
-            px =   (unsigned int)(31 - (led - 88)) * (((float)FRAME_WIDTH+0.0) * (float)(WINDOW_WIDTH / ((float)FRAME_WIDTH + 3.7)) / 32.0)
-                 + (2 * WINDOW_WIDTH / (FRAME_WIDTH + 4)) + 2;
-        py = WINDOW_HEIGHT - (WINDOW_HEIGHT / 24) - 2;
+        px =   (unsigned int)((gChannelDLEDNum + gChannelELEDNum - 1) - (led - (gChannelALEDNum + gChannelBLEDNum + gChannelCLEDNum))) * (((float)FRAME_WIDTH+0.0) * (float)(WINDOW_WIDTH / ((float)FRAME_WIDTH + 3.7)) / (float)(gChannelDLEDNum + gChannelELEDNum))
+             + (2 * WINDOW_WIDTH / (FRAME_WIDTH + 4)) + 2;
+        py = WINDOW_HEIGHT - (WINDOW_HEIGHT / gChannelCLEDNum) - 2;
     }
 
     rec.x = px;

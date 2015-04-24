@@ -21,6 +21,14 @@ int[][] gTempChannelData = new int[5][2 * cChannelACMax + cChannelBMax + 2 * cCh
 //----------------------------------------------------------------------------//
 boolean saveChannelConfigFile(File selection)
 {
+  return saveChannelConfigFile(selection, false);
+}
+
+//----------------------------------------------------------------------------//
+//
+//----------------------------------------------------------------------------//
+boolean saveChannelConfigFile(File selection, boolean mirror)
+{
   // 1. testen ob eine Datei selektiert wurde
   if (null == selection)
   {
@@ -110,15 +118,33 @@ boolean saveChannelConfigFile(File selection)
 
   // save the relation array data to the file strings array lines[]
   // Channel A
-  lines[0] = genChannelLineStr(0, ledNumA);
+  if (true == mirror)
+  {
+    lines[0] = genChannelLineStr(0, ledNumC, true);
+  } else {
+    lines[0] = genChannelLineStr(0, ledNumA, false);
+  }
   // Channel B
-  lines[1] = genChannelLineStr(1, ledNumB);
+  lines[1] = genChannelLineStr(1, ledNumB, mirror);
   // Channel C
-  lines[2] = genChannelLineStr(2, ledNumC);
-  // Channel D
-  lines[3] = genChannelLineStr(3, ledNumD);
-  // Channel E
-  lines[4] = genChannelLineStr(4, ledNumE);
+  if (true == mirror)
+  {
+    lines[2] = genChannelLineStr(2, ledNumA, true);
+  } else {
+    lines[2] = genChannelLineStr(2, ledNumC, false);
+  }
+  if (true == mirror)
+  {
+    // Channel D
+    lines[3] = genChannelLineStr(3, ledNumE, true);
+    // Channel E
+    lines[4] = genChannelLineStr(4, ledNumD, true);
+  } else {
+    // Channel D
+    lines[3] = genChannelLineStr(3, ledNumD, false);
+    // Channel E
+    lines[4] = genChannelLineStr(4, ledNumE, false);
+  }
 
   // 7. daten speichern
   saveStrings(fname, lines);
@@ -243,19 +269,42 @@ boolean openChannelConfigFile(File selection)
 //----------------------------------------------------------------------------//
 String genChannelLineStr(int chan, int ledNumMax)
 {
+  return genChannelLineStr(chan, ledNumMax, false);
+}
+
+//----------------------------------------------------------------------------//
+// Generate one line which could be used to put into a channel config file
+//----------------------------------------------------------------------------//
+String genChannelLineStr(int chan, int ledNumMax, boolean mirror)
+{
   String line;
   boolean first = true;
   line = cChannelNames[chan] + ":";
 
-  for (int i = 0; i < ledNumMax; i++)
+  if (true == mirror)
   {
-    if (true == first)
+    // invert the LED number order
+    for (int i = ledNumMax-1; i == 0; i--)
     {
-      first = false;
-    } else {
-      line += ",";
+      if (true == first)
+      {
+        first = false;
+      } else {
+        line += ",";
+      }
+      line += "" + gTempChannelData[chan][i];
     }
-    line += "" + gTempChannelData[chan][i];
+  } else {
+    for (int i = 0; i < ledNumMax; i++)
+    {
+      if (true == first)
+      {
+        first = false;
+      } else {
+        line += ",";
+      }
+      line += "" + gTempChannelData[chan][i];
+    }
   }
 
   dbgPrintln(line);

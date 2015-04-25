@@ -73,8 +73,17 @@ int main(int argc, char **argv)
 
         // 1. TTY kommando senden
         SERIAL_WRITE("ravrb\r\n", 6);
+        char *tstr = "          ";
+        tstr[0] = '<';
+        tstr[1] = '>';
+        tstr[2] = 18; // reset to bootloader command
+        tstr[3] = '\r';
+        tstr[4] = '\n';
+        tstr[5] = '\0';
+        SERIAL_WRITE(tstr, 5);
 
-        printf("done\n");
+        printf("done\n\n");
+
         sh_closeSerialPort();
 
     }

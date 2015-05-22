@@ -72,8 +72,8 @@ int main(int argc, char **argv)
         printf("Resetting AmbiController to bootloader... ");
 
         // 1. TTY kommando senden
-        SERIAL_WRITE("ravrb\r\n", 6);
-        char *tstr = "          ";
+        SERIAL_WRITE("ravrb\r\n  ", 8);
+        char tstr[] = "          ";
         tstr[0] = '<';
         tstr[1] = '>';
         tstr[2] = 18; // reset to bootloader command

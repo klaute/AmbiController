@@ -1,1 +1,1 @@
-#define BC_CMD_CNT 24
+#define BC_CMD_CNT 25

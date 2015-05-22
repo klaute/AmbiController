@@ -22,3 +22,4 @@
 #define BC_CMD_GET_DSP_SEL         21
 #define BC_CMD_SET_TTY_BIN         22
 #define BC_CMD_GET_TTY_BIN         23
+#define BC_CMD_ENABLE_TFC          24

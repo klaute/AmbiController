@@ -118,6 +118,8 @@ int main(int argc, char **argv)
 
     struct arg_int *param_loglvl      = arg_int0("O", "loglvl",   "0-255", "Set the log level");
 
+    struct arg_int *param_sttyb       = arg_int0("B", "ttybin",   "0=off|1=on", "Set the TTY binary mode");
+
     struct arg_end *param_end         = arg_end(25);
 
     // default parameter
@@ -152,6 +154,7 @@ int main(int argc, char **argv)
         param_sendLEDCfg,
         param_usbcon,
         param_loglvl,
+        param_sttyb,
         param_end
     };
 
@@ -215,6 +218,7 @@ int main(int argc, char **argv)
              param_sendLEDCfg->count  == 0 &&
              param_usbcon->count      == 0 &&
              param_loglvl->count      == 0 &&
+             param_sttyb->count       == 0 &&
              param_sdsps->count       == 0)
         || param_sport->count == 0)
     {
@@ -381,6 +385,11 @@ int main(int argc, char **argv)
                 fprintf(stderr, "Error: Invalid parameter value.\nBrightness range is 0x00 to 0xff.\n");
                 return -5;
             }
+        }
+        if (param_sttyb->count > 0)
+        {
+            printf("Set TTY binary mode\n");
+            bc_enableTTYBinMode(param_sambi->ival[0]);
         }
         if (param_sambi->count > 0)
         {

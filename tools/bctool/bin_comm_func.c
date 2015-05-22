@@ -813,3 +813,23 @@ void bc_sendChannelConfigData(int page, unsigned int *data, int len)
 
 /*****************************************************************************/
 
+void bc_enableTTYBinMode(int s)
+{
+    if (s > 1)
+        s = 1;
+    if (s < 0)
+        s = 0;
+    char tmsg[20] = "";
+    sprintf(tmsg, "%c%c%c%c%c%c",
+                  BC_READER_FIRST_START_CHAR,
+                  BC_READER_SECOND_START_CHAR,
+                  BC_CMD_SET_TTY_BIN,
+                  (char)(s & 0xFF),
+                  BC_READER_FIRST_END_CHAR,
+                  BC_READER_SECOND_END_CHAR);
+    SERIAL_WRITE(tmsg, 6);
+
+}
+
+/*****************************************************************************/
+

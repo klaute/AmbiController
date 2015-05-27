@@ -114,11 +114,13 @@ int main(int argc, char **argv)
 
     struct arg_str *param_sendLEDCfg  = arg_str0("L", "ledcfg",   "<File name>", "Send a LED configuration file");
 
-    struct arg_str *param_usbcon      = arg_lit0("U", "usb",      "Connected with USB");
+    struct arg_lit *param_usbcon      = arg_lit0("U", "usb",      "Connected with USB");
 
     struct arg_int *param_loglvl      = arg_int0("O", "loglvl",   "0-255", "Set the log level");
 
     struct arg_int *param_sttyb       = arg_int0("B", "ttybin",   "0=off|1=on", "Set the TTY binary mode");
+
+    struct arg_lit *param_tfc         = arg_lit0("f", "tfc",      "Enable TFC mode");
 
     struct arg_end *param_end         = arg_end(25);
 
@@ -155,6 +157,7 @@ int main(int argc, char **argv)
         param_usbcon,
         param_loglvl,
         param_sttyb,
+        param_tfc,
         param_end
     };
 
@@ -219,6 +222,7 @@ int main(int argc, char **argv)
              param_usbcon->count      == 0 &&
              param_loglvl->count      == 0 &&
              param_sttyb->count       == 0 &&
+             param_tfc->count         == 0 &&
              param_sdsps->count       == 0)
         || param_sport->count == 0)
     {
@@ -385,6 +389,11 @@ int main(int argc, char **argv)
                 fprintf(stderr, "Error: Invalid parameter value.\nBrightness range is 0x00 to 0xff.\n");
                 return -5;
             }
+        }
+        if (param_tfc->count > 0)
+        {
+            printf("Enable TFC mode\n");
+            bc_enableTFCMode();
         }
         if (param_sttyb->count > 0)
         {

@@ -62,6 +62,7 @@ void bc_getDSPSel(void);
 void bc_setChannelLEDNum(int, int, int, int, int);
 void bc_sendChannelConfigData(int, unsigned int*, int);
 void bc_enableTTYBinMode(int);
+void bc_enableTFCMode(void);
 
 /*****************************************************************************/
 

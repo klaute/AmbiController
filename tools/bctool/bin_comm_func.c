@@ -831,5 +831,17 @@ void bc_enableTTYBinMode(int s)
 
 }
 
+void bc_enableTFCMode()
+{
+    char tmsg[20] = "";
+    sprintf(tmsg, "%c%c%c%c%c",
+                  BC_READER_FIRST_START_CHAR,
+                  BC_READER_SECOND_START_CHAR,
+                  BC_CMD_ENABLE_TFC,
+                  BC_READER_FIRST_END_CHAR,
+                  BC_READER_SECOND_END_CHAR);
+    SERIAL_WRITE(tmsg, 5);
+}
+
 /*****************************************************************************/
 

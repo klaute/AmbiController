@@ -106,7 +106,24 @@ int main(int argc, char **argv)
             exit(-20); // cant open serial port
 
         // hier die transceiveJicFile Funktion auf dem AVR-TTY aktivieren
-        // 1. TTY kommando senden
+        // 1.  Enable TTY-mode
+        // write 3C3E16000D0A
+        char tmp[10] = "        ";
+        sprintf(tmp, "%c%c%c%c%c%c", 0x3C, 0x3E, 0x16, 0x00, 0x0D, 0x0A);
+        SERIAL_WRITE(tmp, 6);
+        // flush input buffer here
+
+        printf("Please wait...");
+
+        sh_readDataFromUSART();
+        while (bytesRead > 0)
+        {
+            sh_readDataFromUSART();
+            printf(".");
+        }
+        printf("\n");
+
+        // 1.1 TTY kommando senden
         SERIAL_WRITE("sftfc\r\n", 6);
         printf("Entering TFC mode... ");
 
@@ -130,6 +147,15 @@ int main(int argc, char **argv)
             sh_closeSerialPort();
             exit(-200);
         }
+
+#ifdef DEBUG
+        sprintf(tmp, "%c", 0x06);
+        SERIAL_WRITE(tmp, 1);
+        sh_readDataFromUSART();
+        printf("%d 0x%02x\n", bytesRead, readbuffer[0]);
+        sh_readDataFromUSART();
+        printf("%d 0x%02x\n", bytesRead, readbuffer[0]);
+#endif
 
     }
 
@@ -670,9 +696,13 @@ void writeFlashContent()
         tmp[0] = (ta & 0xff); // address low byte
         SERIAL_WRITE(tmp, 1);
         wfo = waitForOK(); // warten bis erase to sector das ok gesendet hat
-        //printf("wfo = %d\n", wfo);
+#ifdef DEBUG
+        printf("wfo = %d\n", wfo);
+#endif
         wfo = waitForOK(); // warten bis erase to sector das ok gesendet hat
-        //printf("wfo = %d\n", wfo);
+#ifdef DEBUG
+        printf("wfo = %d\n", wfo);
+#endif
     }
     printf("\n");
 

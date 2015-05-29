@@ -5,7 +5,7 @@
 
 /******************************************************************************/
 
-//#define DEBUG there are no debug messsages implemented yet
+//#define DEBUG // there are no debug messsages implemented yet
 
 /******************************************************************************/
 

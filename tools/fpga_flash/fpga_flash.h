@@ -44,6 +44,9 @@
 
 /******************************************************************************/
 
+int comm_timeout = 0;
+time_t time_old;
+
 unsigned int time_now;
 unsigned int byte_per_sec       = 0;
 unsigned int byte_per_sec_avg   = 0;

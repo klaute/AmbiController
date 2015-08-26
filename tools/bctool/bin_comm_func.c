@@ -81,7 +81,7 @@ void pollCommFSM()
 #ifdef DEBUG
         char c2 = c;
         if (c2 <= 32)
-            c2 = 32;
+            c2 = 32; // if the caracter is not a displayable ASCII character replace it by an space
         printf("s: 0x%02x c: 0x%02x = %c\r\n", msgState, c, c2);           
 #endif
 
@@ -128,6 +128,9 @@ void pollCommFSM()
 
                 if (cmd >= BC_CMD_CNT)
                     msgState = BC_STATE_READ_FIRST_CHAR; // command is invalid, abort
+
+                if (cmd == BC_CMD_SET_CHANNEL_DATA)
+                    printf("*");
 
                 msgState = BC_STATE_READ_ANSWER_DATA;
 
@@ -199,6 +202,7 @@ void pollCommFSM()
 #ifdef DEBUG
                 printf("ns: 0x%02x\r\n", nextStateToProcessData);
 #endif
+                //if (c == BC_READER_FIRST_END_CHAR || c == BC_READER_SECOND_END_CHAR)
                 if (c == BC_READER_FIRST_END_CHAR)
                     // skip next state because the newline is removed by the read function
                     msgState = BC_STATE_READ_SECOND_END_CHAR;
@@ -254,7 +258,7 @@ void pollCommFSM()
 #ifdef DEBUG
         if (nextStateToProcessData != BC_STATE_READ_FIRST_CHAR)
             printf("stp: 0x%02x s: 0x%02x\r\n", nextStateToProcessData, msgState);
-        
+
         printf("m: 0x%02x\r\n", msgState);
 #endif
 
@@ -282,7 +286,7 @@ void pollCommFSM()
                     printf("\nADV7611 status:\n===============\n");
                     printf("Hotplug detected 0x%02x\n", data[0]);
                     printf("ROM version      0x%02x%02x\n", data[2], data[1]);
-                    waitForADVStatus = 0;
+                    waitForADVStatus -= 1;
                 }
                 else if (cmd == BC_CMD_TVP_GET_STATUS)
                 {
@@ -291,7 +295,7 @@ void pollCommFSM()
                     printf("Status Register 2     0x%02x\n", data[1]);
                     printf("Video Status Register 0x%02x\n", data[2]);
                     printf("ROM version           0x%02x\n", data[3]);
-                    waitForTVPStatus = 0;
+                    waitForTVPStatus -= 1;
                 }
                 else if (cmd == BC_CMD_GET_AMBI_STATUS)
                 {
@@ -312,7 +316,7 @@ void pollCommFSM()
                     printf("Sleep timeout              0x%04x\n",
                            (data[17] + (data[16] << 8)));
                     printf("FPGA YCbCr data simulation %d\n", data[18]);
-                    waitForAmbiStatus = 0;
+                    waitForAmbiStatus -= 1;
                 }
                 else if (cmd == BC_CMD_GET_VERSION_INFO)
                 {
@@ -329,7 +333,7 @@ void pollCommFSM()
                     printf("Bootloader protocol:       %c%c%c%c%c%c\n",
                            data[18], data[19], data[20],
                            data[21], data[22], data[23]);
-                    waitForAnswer = 0;
+                    waitForAnswer -= 1;
                 }
                 else if (cmd == BC_CMD_GET_DSP_SEL)
                 {
@@ -341,12 +345,12 @@ void pollCommFSM()
                     } else {
                         printf("TVP5146\n");
                     }
-                    waitForAnswer = 0;
+                    waitForAnswer -= 1;
                 }
                 else if (data[0] == BC_ANSWER_OK)
                 { // ok
 
-                    waitForAnswer = 0; // TODO sicherstellen das auf das richtige kommando gehört wird
+                    waitForAnswer -= 1; // TODO sicherstellen das auf das richtige kommando gehört wird
                 } // ELSE not ok
 
                 msgState = BC_STATE_READ_FIRST_CHAR;
@@ -416,7 +420,7 @@ void bc_setFPGAYCbCrSimulation(int s)
                     BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 6);
 
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_setSearchSignal(int s)
@@ -434,7 +438,7 @@ void bc_setSearchSignal(int s)
                     BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 6);
 
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 
 }
 
@@ -454,7 +458,7 @@ void bc_setSleepTimeout(int t)
                     BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 7);
 
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 
 }
 
@@ -469,7 +473,7 @@ void bc_nextTVPInput()
                     BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 5);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_resetAVR_to_Bootloader()
@@ -483,7 +487,7 @@ void bc_resetAVR_to_Bootloader()
                     BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 5);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_resetAVR()
@@ -497,7 +501,7 @@ void bc_resetAVR()
                     BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 5);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_setNCRGB(int r, int g, int b)
@@ -521,7 +525,7 @@ void bc_setNCRGB(int r, int g, int b)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 8);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_setMaxRGB(int r, int g, int b)
@@ -545,7 +549,7 @@ void bc_setMaxRGB(int r, int g, int b)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 8);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_setOffsetRGB(int r, int g, int b)
@@ -569,7 +573,7 @@ void bc_setOffsetRGB(int r, int g, int b)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 8);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_setLPFC(int c)
@@ -588,7 +592,7 @@ void bc_setLPFC(int c)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 7);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_setBrightness(int b)
@@ -606,7 +610,7 @@ void bc_setBrightness(int b)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 6);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_setAmbiStatus(int s)
@@ -624,7 +628,7 @@ void bc_setAmbiStatus(int s)
                     BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 6);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_setLogLevel(int l)
@@ -642,7 +646,7 @@ void bc_setLogLevel(int l)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 6);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_getAmbiStatus(void)
@@ -656,7 +660,7 @@ void bc_getAmbiStatus(void)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 5);
     
-    waitForAmbiStatus = 1;
+    waitForAmbiStatus += 1;
 }
 
 void bc_getADVStatus(void)
@@ -670,7 +674,7 @@ void bc_getADVStatus(void)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 5);
     
-    waitForADVStatus = 1;
+    waitForADVStatus += 1;
 }
 
 void bc_getTVPStatus(void)
@@ -684,7 +688,7 @@ void bc_getTVPStatus(void)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 5);
 
-    waitForTVPStatus = 1;
+    waitForTVPStatus += 1;
 }
 
 
@@ -699,7 +703,7 @@ void bc_getVersionInformation(void)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 5);
 
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 
 }
 
@@ -718,7 +722,7 @@ void bc_setDSPInSW(int s)
                     BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 6);
     
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_getDSPSel(void)
@@ -732,7 +736,7 @@ void bc_getDSPSel(void)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 5);
 
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_setChannelLEDNum(int a, int b, int c, int d, int e)
@@ -751,7 +755,7 @@ void bc_setChannelLEDNum(int a, int b, int c, int d, int e)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 10);
 
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 void bc_sendChannelConfigData(int page, unsigned int *data, int len)
@@ -808,7 +812,7 @@ void bc_sendChannelConfigData(int page, unsigned int *data, int len)
                   BC_READER_SECOND_END_CHAR);
     SERIAL_WRITE(tmsg, 2);
 
-    waitForAnswer = 1;
+    waitForAnswer += 1;
 }
 
 /*****************************************************************************/

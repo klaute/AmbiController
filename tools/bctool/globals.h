@@ -8,6 +8,7 @@
 /*****************************************************************************/
 
 //#define DEBUG
+//#define DEBUG2
 //#define ENABLE_SDL
 #define USE_THREADS
 
@@ -21,8 +22,8 @@
 #define WINDOW_WIDTH  600 //< Pixel
 #define WINDOW_HEIGHT (uint16_t)((WINDOW_WIDTH*3)/4) //< create a window with 4:3 propotion
 
-#define BORDER_WIDTH    20 //< Pixel
-#define BORDER_HEIGHT   20 //< Pixel
+#define BORDER_WIDTH  20 //< Pixel
+#define BORDER_HEIGHT 20 //< Pixel
 
 #define LED_COLOR_PIXE_WIDTH  10
 #define LED_COLOR_PIXE_HEIGHT 10
@@ -31,11 +32,11 @@
 
 /*****************************************************************************/
 
-#define DELAY_READ_POLL_FSM_US   (unsigned int)(0) //< No delay active (higest performance).
+#define DELAY_READ_POLL_FSM_US (unsigned int)(10) //< No delay active (higest performance).
 
 /*****************************************************************************/
 
-#define COMMUNICATION_TIMEOUT_SEC 2 // 5 seconds until the read process stops to wait for incomeing data (in command line mode)
+#define COMMUNICATION_TIMEOUT_SEC 5 // 5 seconds until the read process stops to wait for incomeing data (in command line mode)
 
 /*****************************************************************************/
 // the count of bytes which should be read related to the input command

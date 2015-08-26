@@ -66,7 +66,19 @@ void sh_readDataFromUSART()
         bytesRead = readFromSerialPort(sh_file_handle, readbuffer, sizeof(readbuffer)-1);
 #else
         bytesRead = read(sh_file_handle, readbuffer, sizeof(readbuffer)-1);
+
+#ifdef DEBUG
+        printf("sh_bytesRead: 0x%02x\n", bytesRead);
+        if (bytesRead > 0)
+            printf("sh_data: 0x%02x\n", readbuffer[0]);
 #endif
+#endif
+
+        if (bytesRead > 0)
+        {
+          comm_timeout = 0; // reset the timer because some data were received
+          time_old = time(0);
+        }
 
         readbuffer[bytesRead] = 0;
 

@@ -397,7 +397,7 @@ int main(int argc, char **argv)
         }
         if (param_sttyb->count > 0)
         {
-            printf("Set TTY binary mode\n");
+            printf("Set TTY binary mode to %d\n", param_sambi->ival[0]);
             bc_enableTTYBinMode(param_sambi->ival[0]);
         }
         if (param_sambi->count > 0)
@@ -516,6 +516,15 @@ int main(int argc, char **argv)
 #endif // ENABLE_SDL
 
     /*********************/
+    int waitForAmbiStatus_old = 0;
+    int waitForTVPStatus_old  = 0;
+    int waitForADVStatus_old  = 0;
+    int waitForAnswer_old     = 0;
+
+#ifdef DEBUG2
+    printf("wfa: %d wft: %d wfd: %d wfa: %d\n", waitForAmbiStatus, waitForTVPStatus, waitForADVStatus, waitForAnswer);
+#endif
+
     while(running)
     {
 
@@ -530,10 +539,32 @@ int main(int argc, char **argv)
 
         // TODO hier prüfen ob die alle informationen empfangen wurden, die abgefragt werden sollten.
 
-        if (!gui_enabled && waitForAmbiStatus == 0 && waitForTVPStatus == 0 && waitForADVStatus == 0 && waitForAnswer == 0)
+        pthread_mutex_lock(&mutex1);
+
+        if (!gui_enabled && waitForAmbiStatus == 0 && waitForTVPStatus == 0 &&
+                            waitForADVStatus  == 0 && waitForAnswer    == 0)
             running = 0;
 
-        if (!gui_enabled && (waitForAmbiStatus == 1 || waitForTVPStatus == 1 || waitForADVStatus == 1 || waitForAnswer == 1))
+        if (!gui_enabled && (waitForAmbiStatus != waitForAmbiStatus_old ||
+                             waitForTVPStatus  != waitForTVPStatus_old  ||
+                             waitForADVStatus  != waitForADVStatus_old  ||
+                             waitForAnswer     != waitForAnswer_old))
+        {
+          waitForAmbiStatus_old = waitForAmbiStatus;
+          waitForTVPStatus_old  = waitForTVPStatus;
+          waitForADVStatus_old  = waitForADVStatus;
+          waitForAnswer_old     = waitForAnswer;
+
+          comm_timeout = 0; // reset the timer because some data were received
+          time_old = time(0);
+
+        }
+#ifdef DEBUG2
+        printf("wfa: %d wft: %d wfd: %d wfa: %d\n", waitForAmbiStatus, waitForTVPStatus, waitForADVStatus, waitForAnswer);
+#endif
+
+        if (!gui_enabled && (waitForAmbiStatus >= 1 || waitForTVPStatus >= 1 ||
+                             waitForADVStatus  >= 1 || waitForAnswer    >= 1))
         {
             time_t t = time(0);
             if (t > time_old)
@@ -547,6 +578,8 @@ int main(int argc, char **argv)
                 running = 0;
             }
         }
+
+        pthread_mutex_unlock(&mutex1);
 
     } // end of main loop
 
@@ -849,8 +882,8 @@ void readAndSendLEDChannelCfg(char *filename)
     // 5. close file
     fclose(fh);
 
-    // reset the AVR after channe data hes been sent
-    bc_resetAVR();
+    // reset the AVR after channel data has been sent
+    //bc_resetAVR();
 
 }
 

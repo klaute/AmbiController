@@ -9,7 +9,7 @@
 
 //#define DEBUG
 //#define DEBUG2
-#define ENABLE_SDL
+//#define ENABLE_SDL
 #define USE_THREADS
 
 /*****************************************************************************/

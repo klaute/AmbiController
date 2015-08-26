@@ -129,8 +129,8 @@ void pollCommFSM()
                 if (cmd >= BC_CMD_CNT)
                     msgState = BC_STATE_READ_FIRST_CHAR; // command is invalid, abort
 
-                if (cmd == BC_CMD_SET_CHANNEL_DATA)
-                    printf("*");
+                //if (cmd == BC_CMD_SET_CHANNEL_DATA)
+                    //printf("*");
 
                 msgState = BC_STATE_READ_ANSWER_DATA;
 

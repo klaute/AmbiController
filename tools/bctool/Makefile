@@ -14,6 +14,7 @@
 
 CC         = gcc
 #CC         = i686-pc-cygwin-gcc-4.8.2
+#CC = i686-w64-mingw32-gcc
 CINCS      = -I../../firmware/ -I../firmware/ -I/usr/local/include
 CFLAGS     = `sdl2-config --cflags` ${CINCS}
 CFLAGS    += -g -DWIN32=32 -std=gnu99
